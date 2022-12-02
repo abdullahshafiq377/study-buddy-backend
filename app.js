@@ -1,34 +1,51 @@
 // Import Statments
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-const morgan = require("morgan");
-const cors = require("cors");
+const morgan = require('morgan');
+const cors = require('cors');
+const verifyJWT = require('./src/middleware/verifyJWT');
+const cookieParser = require('cookie-parser');
 
 // Router Imports
-const indexRouter = require("./src/routes/index");
-const studentRouter = require("./src/routes/students");
-const instructorRouter = require("./src/routes/instructors");
-const subAdminRouter = require("./src/routes/subAdmins");
-const departmentRouter = require("./src/routes/departments");
-const programRouter = require("./src/routes/programs");
-const courseRouter = require("./src/routes/courses");
-const noticeRouter = require("./src/routes/notices");
-const eventRouter = require("./src/routes/events");
-const alertRouter = require("./src/routes/alerts");
+const indexRouter = require('./src/routes/index');
+const adminRouter = require('./src/routes/api/admin');
+const studentRouter = require('./src/routes/api/students');
+const instructorRouter = require('./src/routes/api/instructors');
+const subAdminRouter = require('./src/routes/api/subAdmins');
+const departmentRouter = require('./src/routes/api/departments');
+const programRouter = require('./src/routes/api/programs');
+const courseRouter = require('./src/routes/api/courses');
+const noticeRouter = require('./src/routes/api/notices');
+const eventRouter = require('./src/routes/api/events');
+const alertRouter = require('./src/routes/api/alerts');
+
+// Auth Router Imports
+const authRouter = require('./src/routes/auth');
+const refreshRouter = require('./src/routes/refresh');
+const logoutRouter = require('./src/routes/logout');
 
 // Enviornmental Variables
-require("dotenv/config");
+require('dotenv/config');
 const api = process.env.API_URL;
 
 // Middlewares
+
+app.use(morgan('tiny'));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(morgan("tiny"));
-app.use(cors());
-app.options("*", cors());
+
+// Auth Routers
+app.use(`${api}/auth`, authRouter);
+app.use(`${api}/refresh`, refreshRouter);
+app.use(`${api}/logout`, logoutRouter);
 
 // Routers
 app.use(`${api}/`, indexRouter);
+
+app.use(verifyJWT);
+app.use(`${api}/admin`, adminRouter);
 app.use(`${api}/students`, studentRouter);
 app.use(`${api}/instructors`, instructorRouter);
 app.use(`${api}/sub-admins`, subAdminRouter);
@@ -43,5 +60,5 @@ app.use(`${api}/alerts`, alertRouter);
 const serverPort = 8000;
 
 app.listen(serverPort, () => {
-  console.log(`Server is running on http://localhost:${serverPort}`);
+	console.log(`Server is running on http://localhost:${serverPort}`);
 });

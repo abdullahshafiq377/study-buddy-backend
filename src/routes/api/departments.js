@@ -1,7 +1,8 @@
 // Import Statements
 const express = require("express");
 const router = express.Router();
-const paraQuery = require("../utils/db");
+const paraQuery = require("../../utils/db");
+
 
 // Get Route for departments
 // Returns all the departments from the database as response

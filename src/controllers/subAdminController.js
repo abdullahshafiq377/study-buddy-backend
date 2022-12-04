@@ -1,4 +1,5 @@
 const paraQuery = require('../utils/db');
+require('dotenv').config();
 const getPasswordHash = require('./../utils/passwordHash');
 
 const getAllSubAdmins = async (req, res) => {
@@ -17,7 +18,7 @@ const getSubAdminById = async (req, res) => {
 
 const createNewSubAdmin = async (req, res) => {
 	let b = req.body;
-	let password = getPasswordHash(process.env.DEFAULT_PASSWORD);
+	let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
 	let x = await paraQuery(
 		'INSERT INTO sub_admin (name, f_name, dob, gender, nationality, contact, email, image, department_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		[

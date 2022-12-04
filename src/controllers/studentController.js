@@ -1,4 +1,5 @@
 const paraQuery = require('../utils/db');
+require('dotenv').config();
 const getPasswordHash = require('./../utils/passwordHash');
 
 const getAllStudents = async (req, res) => {
@@ -17,7 +18,8 @@ const getStudentById = async (req, res) => {
 
 const createNewStudent = async (req, res) => {
 	let b = req.body;
-	let password = getPasswordHash(process.env.DEFAULT_PASSWORD);
+	let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
+
 	let x = await paraQuery(
 		'INSERT INTO student (name, f_name, dob, gender, nationality, contact, email, image,department_id, password, program_id, program_title, session, reg_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		[

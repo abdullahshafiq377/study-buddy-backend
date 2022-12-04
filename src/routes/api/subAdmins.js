@@ -3,15 +3,15 @@ const express = require('express');
 const subAdminController = require('../../controllers/subAdminController');
 const router = express.Router();
 
-// Get Route for sub-admins
-// Returns all the sub-admins from the database as response
 router
 	.route('/')
 	.get(subAdminController.getAllSubAdmins)
-	.post(subAdminController.createNewSubAdmin)
-	.put(subAdminController.updateSubAdmin)
-	.delete(subAdminController.deleteSubAdmin);
+	.post(subAdminController.createNewSubAdmin);
 
-router.route('/:id').get(subAdminController.getSubAdminById);
+router
+	.route('/:id')
+	.get(subAdminController.getSubAdminById)
+	.delete(subAdminController.deleteSubAdmin)
+	.put(subAdminController.updateSubAdmin);
 
 module.exports = router;

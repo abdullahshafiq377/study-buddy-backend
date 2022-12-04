@@ -55,9 +55,8 @@ const handleRefreshToken = async (req, res) => {
 			const accessToken = jwt.sign(
 				{ email: decoded.email },
 				process.env.ACCESS_TOKEN_SECRET,
-				{ expiresIn: '60s' },
+				{ expiresIn: '30m' },
 			);
-			console.log('New Token', accessToken);
 			res.json({ accessToken, userType });
 		},
 	);

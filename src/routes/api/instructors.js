@@ -8,10 +8,12 @@ const router = express.Router();
 router
 	.route('/')
 	.get(instructorController.getAllInstructors)
-	.post(instructorController.createNewInstructor)
+	.post(instructorController.createNewInstructor);
+
+router
+	.route('/:id')
+	.get(instructorController.getInstructorById)
 	.put(instructorController.updateInstructor)
 	.delete(instructorController.deleteInstructor);
-
-router.route('/:id').get(instructorController.getInstructorById);
 
 module.exports = router;

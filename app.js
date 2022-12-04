@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 
 // Router Imports
 const indexRouter = require('./src/routes/index');
-const adminRouter = require('./src/routes/api/admin');
 const studentRouter = require('./src/routes/api/students');
 const instructorRouter = require('./src/routes/api/instructors');
 const subAdminRouter = require('./src/routes/api/subAdmins');
@@ -45,7 +44,6 @@ app.use(`${api}/logout`, logoutRouter);
 app.use(`${api}/`, indexRouter);
 
 app.use(verifyJWT);
-app.use(`${api}/admin`, adminRouter);
 app.use(`${api}/students`, studentRouter);
 app.use(`${api}/instructors`, instructorRouter);
 app.use(`${api}/sub-admins`, subAdminRouter);

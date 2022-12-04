@@ -66,12 +66,12 @@ const handleLogin = async (req, res) => {
 		const accessToken = jwt.sign(
 			{ email: user.email },
 			process.env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: '60s' },
+			{ expiresIn: '30m' },
 		);
 		const refreshToken = jwt.sign(
 			{ email: user.email },
 			process.env.REFRESH_TOKEN_SECRET,
-			{ expiresIn: '1h' },
+			{ expiresIn: '1d' },
 		);
 
 		switch (userType) {
@@ -94,11 +94,11 @@ const handleLogin = async (req, res) => {
 
 		res.cookie('jwt', refreshToken, {
 			httpOnly: true,
-			maxAge: 1 * 60 * 60 * 1000,
+			maxAge: 24 * 60 * 60 * 1000,
 		});
 		res.cookie('userType', userType, {
 			httpOnly: true,
-			maxAge: 1 * 60 * 60 * 1000,
+			maxAge: 24 * 60 * 60 * 1000,
 		});
 		res.json({ accessToken, userType });
 	} else {

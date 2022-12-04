@@ -8,10 +8,12 @@ const router = express.Router();
 router
 	.route('/')
 	.get(studentController.getAllStudents)
-	.post(studentController.createNewStudent)
+	.post(studentController.createNewStudent);
+
+router
+	.route('/:id')
+	.get(studentController.getStudentById)
 	.put(studentController.updateStudent)
 	.delete(studentController.deleteStudent);
-
-router.route('/:id').get(studentController.getStudentById);
 
 module.exports = router;

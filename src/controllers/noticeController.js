@@ -1,41 +1,71 @@
 const paraQuery = require('../utils/db');
 
 const getAllNotices = async (req, res) => {
-	let x = await paraQuery('SELECT * FROM notice', []);
-	console.log(x);
-	res.json(x);
+	try {
+		let x = await paraQuery('SELECT * FROM notice', []);
+		console.log(x);
+		res.json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
 };
 
 const getNoticeById = async (req, res) => {
-	let x = await paraQuery('SELECT * FROM notice WHERE id=?', [
-		req.params.id,
-	]);
-	console.log(x);
-	res.json(x);
+	try {
+		let { id } = req.params;
+
+		let x = await paraQuery('SELECT * FROM notice WHERE id=?', [id]);
+		console.log(x);
+		res.json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
 };
 
 const createNewNotice = async (req, res) => {
-	let b = req.body;
-	let x = await paraQuery('INSERT INTO notice (title, link) VALUES (?, ?)', [
-		b.title,
-		b.link,
-	]);
-	res.status(200).json(x);
+	try {
+		let { title, link } = req.body;
+
+		let x = await paraQuery(
+			'INSERT INTO notice (title, link) VALUES (?, ?)',
+			[title, link],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
 };
 
 const deleteNotice = async (req, res) => {
-	let x = await paraQuery('DELETE FROM notice WHERE id=?', [req.body.id]);
-	console.log(x);
-	res.json(x);
+	try {
+		let { id } = req.params;
+
+		let x = await paraQuery('DELETE FROM notice WHERE id=?', [id]);
+		console.log(x);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
 };
 
 const updateNotice = async (req, res) => {
-	let b = req.body;
-	let x = await paraQuery('INSERT INTO notice (title, link) VALUES (?, ?)', [
-		b.title,
-		b.link,
-	]);
-	res.status(200).json(x);
+	try {
+		let { title, link } = req.body;
+		let { id } = req.params;
+
+		let x = await paraQuery(
+			'UPDATE notice SET title=?, link=? WHERE id=?',
+			[title, link, id],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
 };
 
 module.exports = {

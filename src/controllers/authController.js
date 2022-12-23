@@ -1,3 +1,4 @@
+// Imports Start
 const bcrypt = require('bcrypt');
 const {
 	getAdminForAuth,
@@ -17,6 +18,8 @@ const {
 } = require('./studentController');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+// Imports End
+
 
 const handleLogin = async (req, res) => {
 	// console.log(req);
@@ -27,12 +30,6 @@ const handleLogin = async (req, res) => {
 			.status(400)
 			.json({ message: 'Email and Password are required' });
 	}
-
-	// const response = await getAdminForAuth();
-	// const admin = response.find((admin) => admin.email === email);
-	// if (!admin) {
-	// 	return res.sendStatus(401);
-	// }
 
 	let response = await getAdminForAuth(email);
 	let user = response[0];
@@ -100,7 +97,7 @@ const handleLogin = async (req, res) => {
 			httpOnly: true,
 			maxAge: 24 * 60 * 60 * 1000,
 		});
-		res.json({ accessToken, userType });
+		res.json({ accessToken, userType, userId: user.id });
 	} else {
 		res.sendStatus(401);
 	}

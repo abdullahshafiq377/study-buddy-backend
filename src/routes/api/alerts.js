@@ -8,12 +8,12 @@ const router = express.Router();
 router
 	.route('/')
 	.get(alertController.getAllAlerts)
-	.post(alertController.createNewAlert)
-	.put(alertController.updateAlert);
+	.post(alertController.createNewAlert);
 
 router
 	.route('/:id')
 	.get(alertController.getAlertById)
-	.delete(alertController.deleteAlert);
+	.delete(alertController.deleteAlert)
+	.put(alertController.updateAlert);
 
 module.exports = router;

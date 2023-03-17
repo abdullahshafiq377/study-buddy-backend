@@ -18,7 +18,8 @@ const courseRouter = require('./src/routes/api/courses');
 const noticeRouter = require('./src/routes/api/notices');
 const eventRouter = require('./src/routes/api/events');
 const alertRouter = require('./src/routes/api/alerts');
-const registrationRouter = require('./src/routes/api/registration');
+const registrationRouter = require('./src/routes/api/registrations');
+const postRouter = require('./src/routes/api/posts');
 
 // Auth Router Imports
 const authRouter = require('./src/routes/auth');
@@ -55,6 +56,7 @@ app.use(`${api}/notices`, noticeRouter);
 app.use(`${api}/events`, eventRouter);
 app.use(`${api}/alerts`, alertRouter);
 app.use(`${api}/registrations`, registrationRouter);
+app.use(`${api}/posts`, postRouter);
 
 
 // Express Server

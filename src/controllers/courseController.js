@@ -5,7 +5,7 @@ const {getSystemDetails} = require("./systemController");
 
 const getAllCourses = async (req, res) => {
     try {
-        let x = await paraQuery('SELECT * FROM course WHERE offered = 1 AND program_id = \'4532ad94-68b7-11ed-969c-1062e55b5358\' AND min_semester <= 2', []);
+        let x = await paraQuery('SELECT * FROM course', []);
         console.log(x);
         res.json(x);
     } catch (error) {

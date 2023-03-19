@@ -27,6 +27,19 @@ const getCourseById = async (req, res) => {
     }
 };
 
+const getCourseByDepartment = async (req, res) => {
+    try {
+        let {departmentId} = req.params;
+
+        let x = await paraQuery('SELECT * FROM course WHERE department_id=?', [departmentId]);
+        console.log(x);
+        res.json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({error: true});
+    }
+};
+
 const createNewCourse = async (req, res) => {
     try {
         let {
@@ -144,6 +157,7 @@ const unregisterCourse = async (req, res) => {
 module.exports = {
     getAllCourses,
     getCourseById,
+    getCourseByDepartment,
     createNewCourse,
     updateCourse,
     deleteCourse,

@@ -25,6 +25,18 @@ const getInstructorById = async (req, res) => {
 		res.status(400).json({ error: true });
 	}
 };
+const getInstructorByDepartment = async (req, res) => {
+	try {
+		let { departmentId } = req.params;
+
+		let x = await paraQuery('SELECT * FROM instructor WHERE department_id=?', [departmentId]);
+		console.log(x);
+		res.json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
+};
 
 const createNewInstructor = async (req, res) => {
 	try {
@@ -155,6 +167,7 @@ const getInstructorByToken = async (token) => {
 module.exports = {
 	getAllInstructors,
 	getInstructorById,
+	getInstructorByDepartment,
 	getInstructorForAuth,
 	getInstructorByToken,
 	addRefreshTokenToInstructor,

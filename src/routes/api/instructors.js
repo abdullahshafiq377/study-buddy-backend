@@ -16,4 +16,8 @@ router
 	.put(instructorController.updateInstructor)
 	.delete(instructorController.deleteInstructor);
 
+router
+	.route('/by-department/:departmentId')
+	.get(instructorController.getInstructorByDepartment);
+
 module.exports = router;

@@ -20,6 +20,7 @@ const eventRouter = require('./src/routes/api/events');
 const alertRouter = require('./src/routes/api/alerts');
 const registrationRouter = require('./src/routes/api/registrations');
 const postRouter = require('./src/routes/api/posts');
+const sectionRouter = require('./src/routes/api/sections');
 
 // Auth Router Imports
 const authRouter = require('./src/routes/auth');
@@ -57,6 +58,7 @@ app.use(`${api}/events`, eventRouter);
 app.use(`${api}/alerts`, alertRouter);
 app.use(`${api}/registrations`, registrationRouter);
 app.use(`${api}/posts`, postRouter);
+app.use(`${api}/sections`, sectionRouter);
 
 
 // Express Server

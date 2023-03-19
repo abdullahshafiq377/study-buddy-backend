@@ -97,7 +97,7 @@ const handleLogin = async (req, res) => {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
         });
-        res.json({accessToken, userType, userId: user.id});
+        res.json({accessToken, userType, userId: user.id, userDepartmentId: user.department_id});
     } else {
         res.sendStatus(401);
     }

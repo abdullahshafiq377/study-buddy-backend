@@ -14,5 +14,9 @@ router
     .delete(courseController.deleteCourse)
     .put(courseController.updateCourse);
 
+router
+    .route('/by-department/:departmentId')
+    .get(courseController.getCourseByDepartment);
+
 
 module.exports = router;

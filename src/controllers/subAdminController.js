@@ -112,6 +112,45 @@ const updateSubAdmin = async (req, res) => {
 	}
 };
 
+const updateSubAdminPassword = async (req, res) => {
+	try {
+		let {password} = req.body;
+		let { id } = req.params;
+		let passwordHash = await getPasswordHash(password);
+
+		let x = await paraQuery(
+			'UPDATE sub_admin SET password = ? WHERE id = ?;',
+			[
+				passwordHash,
+				id,
+			],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
+};
+
+const resetSubAdminPassword = async (req, res) => {
+	try {
+		let {email} = req.params;
+		let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
+
+		let x = await paraQuery(
+			'UPDATE sub_admin SET password = ? WHERE email = ?;',
+			[
+				password,
+				email,
+			],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
+};
+
 const getSubAdminForAuth = async (email) => {
 	try {
 		let x = await paraQuery('SELECT * FROM sub_admin WHERE email=?', [
@@ -160,5 +199,7 @@ module.exports = {
 	addRefreshTokenToSubAdmin,
 	createNewSubAdmin,
 	updateSubAdmin,
+	updateSubAdminPassword,
 	deleteSubAdmin,
+	resetSubAdminPassword,
 };

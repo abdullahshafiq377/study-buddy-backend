@@ -27,5 +27,9 @@ router
     .route('/comments/:id')
     .delete(postController.deleteComment);
 
+router
+    .route('/comments/by-post/:postId')
+    .delete(postController.deleteCommentsByPost);
+
 
 module.exports = router;

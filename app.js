@@ -46,7 +46,7 @@ app.use(`${api}/logout`, logoutRouter);
 // Routers
 app.use(`${api}/`, indexRouter);
 
-//app.use(verifyJWT);
+// app.use(verifyJWT);
 app.use(`${api}/students`, studentRouter);
 app.use(`${api}/instructors`, instructorRouter);
 app.use(`${api}/sub-admins`, subAdminRouter);

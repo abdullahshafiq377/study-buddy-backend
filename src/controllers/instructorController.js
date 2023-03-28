@@ -125,6 +125,45 @@ const updateInstructor = async (req, res) => {
 	}
 };
 
+const updateInstructorPassword = async (req, res) => {
+	try {
+		let {password} = req.body;
+		let { id } = req.params;
+		let passwordHash = await getPasswordHash(password);
+
+		let x = await paraQuery(
+			'UPDATE instructor SET password = ? WHERE id = ?;',
+			[
+				passwordHash,
+				id,
+			],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
+};
+
+const resetInstructorPassword = async (req, res) => {
+	try {
+		let {email} = req.params;
+		let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
+
+		let x = await paraQuery(
+			'UPDATE instructor SET password = ? WHERE email = ?',
+			[
+				password,
+				email,
+			],
+		);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({ error: true });
+	}
+};
+
 const getInstructorForAuth = async (email) => {
 	try {
 		let x = await paraQuery('SELECT * FROM instructor WHERE email=?', [
@@ -173,5 +212,7 @@ module.exports = {
 	addRefreshTokenToInstructor,
 	createNewInstructor,
 	updateInstructor,
+	updateInstructorPassword,
 	deleteInstructor,
+	resetInstructorPassword,
 };

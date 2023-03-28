@@ -9,8 +9,8 @@ const getAllPosts = async (req, res) => {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
         });
-        await connection.execute('CREATE TEMPORARY TABLE IF NOT EXISTS student_posts AS (SELECT post.id, title, description, is_question, tags,likes,dislikes,date_time, author_id, name AS author_name FROM post INNER JOIN student where author_id = student.id);', []);
-        await connection.execute('CREATE TEMPORARY TABLE IF NOT EXISTS instructor_posts AS (SELECT post.id, title, description, is_question, tags,likes,dislikes,date_time, author_id, name AS author_name FROM post INNER JOIN instructor where author_id = instructor.id);', []);
+        await connection.execute('CREATE TEMPORARY TABLE IF NOT EXISTS student_posts AS (SELECT post.id, title, description, is_question, tags,likes,dislikes,date_time, author_id, name AS author_name, author_type FROM post INNER JOIN student where author_id = student.id);', []);
+        await connection.execute('CREATE TEMPORARY TABLE IF NOT EXISTS instructor_posts AS (SELECT post.id, title, description, is_question, tags,likes,dislikes,date_time, author_id, name AS author_name, author_type FROM post INNER JOIN instructor where author_id = instructor.id);', []);
 
         const [rows, fields] = await connection.execute('SELECT * FROM student_posts UNION SELECT * FROM instructor_posts;', []);
 
@@ -120,6 +120,19 @@ const deleteComment = async (req, res) => {
     }
 };
 
+const deleteCommentsByPost = async (req, res) => {
+    try {
+        let {postId} = req.params;
+
+        let x = await paraQuery('DELETE FROM comment WHERE post_id=?', [postId]);
+        console.log(x);
+        res.status(200).json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({error: true});
+    }
+};
+
 const updatePost = async (req, res) => {
     try {
         let {isQuestion, title, description, tags} = req.body;
@@ -164,5 +177,6 @@ module.exports = {
     updatePost,
     deletePost,
     deleteComment,
+    deleteCommentsByPost,
     addReactions,
 };

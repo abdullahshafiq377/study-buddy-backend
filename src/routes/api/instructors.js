@@ -14,10 +14,15 @@ router
 	.route('/:id')
 	.get(instructorController.getInstructorById)
 	.put(instructorController.updateInstructor)
-	.delete(instructorController.deleteInstructor);
+	.delete(instructorController.deleteInstructor)
+	.patch(instructorController.updateInstructorPassword);
 
 router
 	.route('/by-department/:departmentId')
 	.get(instructorController.getInstructorByDepartment);
+
+router
+	.route('/reset-password/:email')
+	.patch(instructorController.resetInstructorPassword);
 
 module.exports = router;

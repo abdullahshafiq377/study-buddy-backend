@@ -43,10 +43,10 @@ const getCourseByDepartment = async (req, res) => {
 const createNewCourse = async (req, res) => {
     try {
         let {
-            title, credit_hours, department_id, program_id, pre_reqs, min_semester, offered, course_code, description,
+            title, credit_hours, department_id, program_id, min_semester, offered, course_code, description,
         } = req.body;
 
-        let x = await paraQuery('INSERT INTO course (title, credit_hours, department_id, program_id, pre_reqs, min_semester, offered, course_code, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [title, credit_hours, department_id, program_id, pre_reqs, min_semester, offered, course_code, description,],);
+        let x = await paraQuery('INSERT INTO course (title, credit_hours, department_id, program_id, min_semester, offered, course_code, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [title, credit_hours, department_id, program_id, min_semester, offered, course_code, description,],);
         res.status(200).json(x);
     } catch (error) {
         console.log(error);

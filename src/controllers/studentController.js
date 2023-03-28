@@ -132,6 +132,26 @@ const updateStudent = async (req, res) => {
     }
 };
 
+const updateStudentPassword = async (req, res) => {
+    try {
+        let {password} = req.body;
+        let { id } = req.params;
+        let passwordHash = await getPasswordHash(password);
+
+        let x = await paraQuery(
+            'UPDATE student SET password = ? WHERE id = ?;',
+            [
+                passwordHash,
+                id,
+            ],
+        );
+        res.status(200).json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: true });
+    }
+};
+
 
 const getStudentObjById = async (id) => {
     try {
@@ -197,6 +217,24 @@ const getCurrentSemester = async (session) => {
 
     return currentSemester;
 }
+const resetStudentPassword = async (req, res) => {
+    try {
+        let {email} = req.body;
+        let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
+
+        let x = await paraQuery(
+            'UPDATE student SET password = ? WHERE email = ?;',
+            [
+                password,
+                email,
+            ],
+        );
+        res.status(200).json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: true });
+    }
+};
 
 module.exports = {
     getAllStudents,
@@ -207,6 +245,8 @@ module.exports = {
     addRefreshTokenToStudent,
     createNewStudent,
     updateStudent,
+    updateStudentPassword,
     deleteStudent,
     getCurrentSemester,
+    resetStudentPassword,
 };

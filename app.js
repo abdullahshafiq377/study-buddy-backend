@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const verifyJWT = require('./src/middleware/verifyJWT');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
+const socketServer = require('./socketServer');
 
 // Router Imports
 const indexRouter = require('./src/routes/index');
@@ -21,6 +23,7 @@ const alertRouter = require('./src/routes/api/alerts');
 const registrationRouter = require('./src/routes/api/registrations');
 const postRouter = require('./src/routes/api/posts');
 const sectionRouter = require('./src/routes/api/sections');
+const fileRouter = require('./src/routes/api/files');
 
 // Auth Router Imports
 const authRouter = require('./src/routes/auth');
@@ -29,6 +32,7 @@ const logoutRouter = require('./src/routes/logout');
 
 // Enviornmental Variables
 require('dotenv/config');
+const http = require('http');
 const api = process.env.API_URL;
 
 // Middlewares
@@ -37,7 +41,9 @@ app.use(morgan('tiny'));
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
 app.use(bodyParser.json());
-
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(fileUpload());
 // Auth Routers
 app.use(`${api}/auth`, authRouter);
 app.use(`${api}/refresh`, refreshRouter);
@@ -59,11 +65,15 @@ app.use(`${api}/alerts`, alertRouter);
 app.use(`${api}/registrations`, registrationRouter);
 app.use(`${api}/posts`, postRouter);
 app.use(`${api}/sections`, sectionRouter);
+app.use(`${api}/files`, fileRouter);
 
 
 // Express Server
+
+const server = http.createServer(app);
+socketServer.registerSocketServer(server);
 const serverPort = 8000;
 
-app.listen(serverPort, () => {
+server.listen(serverPort, () => {
 	console.log(`Server is running on http://localhost:${serverPort}`);
 });

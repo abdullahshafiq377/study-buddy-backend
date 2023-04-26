@@ -61,12 +61,12 @@ const handleLogin = async (req, res) => {
     if (match) {
         //JWT
         const accessToken = jwt.sign(
-            {email: user.email},
+            {userId: user.id},
             process.env.ACCESS_TOKEN_SECRET,
             {expiresIn: '30m'},
         );
         const refreshToken = jwt.sign(
-            {email: user.email},
+            {userId: user.id},
             process.env.REFRESH_TOKEN_SECRET,
             {expiresIn: '1d'},
         );

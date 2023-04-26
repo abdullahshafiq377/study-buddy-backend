@@ -49,11 +49,11 @@ const handleRefreshToken = async (req, res) => {
 		refreshToken,
 		process.env.REFRESH_TOKEN_SECRET,
 		(err, decoded) => {
-			if (err || user.email !== decoded.email) {
+			if (err || user.id !== decoded.userId) {
 				return sendStatus(403);
 			}
 			const accessToken = jwt.sign(
-				{ email: decoded.email },
+				{ userId: decoded.userId },
 				process.env.ACCESS_TOKEN_SECRET,
 				{ expiresIn: '30m' },
 			);

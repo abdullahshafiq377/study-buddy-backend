@@ -7,7 +7,6 @@ const directConversationHistoryHandler = async (socket) => {
 		const {userId} = socket.user;
 		const io = serverStore.getSocketServerInstance();
 		
-		
 		const conversation = await chatController.getConversationByUser(userId);
 		
 		if (conversation) {

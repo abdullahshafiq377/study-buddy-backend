@@ -1,0 +1,22 @@
+<li
+				className={classNames(
+					message.author_id === receiverId ? 'justify-start' : 'justify-end',
+					'flex'
+				)}
+			>
+				<div>
+					<div
+						className={classNames(
+							message.author_id === receiverId
+							? 'text-gray-700 bg-gray-100'
+							: 'bg-primary-900 text-white',
+							'relative max-w-xl px-4 py-2 rounded-lg shadow'
+						)}
+					>
+						<span className="block font-normal ">{message.content}</span>
+					</div>
+					<span className="block text-sm text-gray-700">
+            {date}
+          </span>
+				</div>
+			</li>

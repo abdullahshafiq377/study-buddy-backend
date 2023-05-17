@@ -23,6 +23,8 @@ const alertRouter = require('./src/routes/api/alerts');
 const registrationRouter = require('./src/routes/api/registrations');
 const postRouter = require('./src/routes/api/posts');
 const sectionRouter = require('./src/routes/api/sections');
+const assignmentRouter = require('./src/routes/api/assignment');
+const quizRouter = require('./src/routes/api/quizzes');
 const fileRouter = require('./src/routes/api/files');
 
 // Auth Router Imports
@@ -65,6 +67,8 @@ app.use(`${api}/alerts`, alertRouter);
 app.use(`${api}/registrations`, registrationRouter);
 app.use(`${api}/posts`, postRouter);
 app.use(`${api}/sections`, sectionRouter);
+app.use(`${api}/assignments`, assignmentRouter);
+app.use(`${api}/quizzes`, quizRouter);
 app.use(`${api}/files`, fileRouter);
 
 

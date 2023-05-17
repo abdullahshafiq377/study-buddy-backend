@@ -122,7 +122,7 @@ const getRegisteredCourses = async (req, res) => {
     try {
         let {stdId} = req.params;
 
-        let x = await paraQuery('SELECT course.id, title, credit_hours, course_code FROM course INNER JOIN registration r on course.id = r.course_id WHERE student_id = ?', [stdId],);
+        let x = await paraQuery('SELECT course.id, title, credit_hours, course_code, section_id FROM course INNER JOIN registration r on course.id = r.course_id WHERE student_id = ?', [stdId],);
         res.status(200).json(x);
     } catch (error) {
         console.log(error);

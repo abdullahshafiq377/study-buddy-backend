@@ -18,8 +18,13 @@ router
     .get(sectionController.getSectionsByDepartment);
 
 router
+    .route('/by-instructor/:instructorId')
+    .get(sectionController.getSectionByInstructor);
+
+router
     .route('/assign/:registrationId')
     .patch(sectionController.assignSection);
+
 router
     .route('/unassign/:registrationId')
     .patch(sectionController.unassignSection);

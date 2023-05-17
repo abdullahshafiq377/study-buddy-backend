@@ -1,7 +1,5 @@
 const paraQuery = require('../utils/db');
 const mysql = require("mysql2/promise");
-const {getStudentObjById, getCurrentSemester} = require("./studentController");
-
 
 const getAllSections = async (req, res) => {
     try {
@@ -40,6 +38,18 @@ const getSectionsByDepartment = async (req, res) => {
     }
 };
 
+const getSectionByInstructor = async (req, res) => {
+    try {
+        let {instructorId} = req.params;
+        
+        let x = await paraQuery('SELECT section.id, section.title, semester, course_id, c.title AS course_title,instructor_id, name AS instructor_name, section.department_id from section INNER JOIN course c on section.course_id = c.id LEFT JOIN instructor i on section.instructor_id = i.id WHERE section.instructor_id = ?', [instructorId]);
+        console.log(x);
+        res.json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({error: true});
+    }
+};
 const createNewSection = async (req, res) => {
     try {
         let {
@@ -157,6 +167,7 @@ module.exports = {
     getAllSections,
     getSectionById,
     getSectionsByDepartment,
+    getSectionByInstructor,
     createNewSection,
     updateSection,
     deleteSection,

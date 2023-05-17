@@ -1,0 +1,3 @@
+Hello
+I am a student of software engineering. I am working on a university project that involves plagiarism detection. I was searching for something similar and i found your repository. I cloned your repository and tested it. It gives a blank html table as an output. I have tried different types of files (pdfs, txts, docx) but its not working on any of them. I have tried to change the number of input files but it still gives an empty response. I have a short deadline to meet so I would really appreciate if you help me.
+Thank You.

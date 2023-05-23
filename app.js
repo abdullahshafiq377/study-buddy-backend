@@ -25,6 +25,10 @@ const postRouter = require('./src/routes/api/posts');
 const sectionRouter = require('./src/routes/api/sections');
 const assignmentRouter = require('./src/routes/api/assignment');
 const quizRouter = require('./src/routes/api/quizzes');
+const attendanceRouter = require('./src/routes/api/attendance');
+const learningResourceRouter = require('./src/routes/api/learningResources');
+const gradeRouter = require('./src/routes/api/grades');
+const resultRouter = require('./src/routes/api/results');
 const fileRouter = require('./src/routes/api/files');
 
 // Auth Router Imports
@@ -69,6 +73,10 @@ app.use(`${api}/posts`, postRouter);
 app.use(`${api}/sections`, sectionRouter);
 app.use(`${api}/assignments`, assignmentRouter);
 app.use(`${api}/quizzes`, quizRouter);
+app.use(`${api}/attendance`, attendanceRouter);
+app.use(`${api}/learning-resources`, learningResourceRouter);
+app.use(`${api}/grades`, gradeRouter);
+app.use(`${api}/results`, resultRouter);
 app.use(`${api}/files`, fileRouter);
 
 

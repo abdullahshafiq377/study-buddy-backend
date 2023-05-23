@@ -22,6 +22,10 @@ router
     .get(sectionController.getSectionByInstructor);
 
 router
+    .route('/by-student/:studentId')
+    .get(sectionController.getStudentSections);
+
+router
     .route('/assign/:registrationId')
     .patch(sectionController.assignSection);
 

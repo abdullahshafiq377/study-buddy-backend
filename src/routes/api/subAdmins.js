@@ -1,7 +1,6 @@
 // Import Statements
 const express = require('express');
 const subAdminController = require('../../controllers/subAdminController');
-const instructorController = require("../../controllers/instructorController");
 const router = express.Router();
 
 router

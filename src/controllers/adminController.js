@@ -36,5 +36,18 @@ const addRefreshTokenToAdmin = async (id, refreshToken) => {
 		return null;
 	}
 };
+const changeAdminPassword = async (req, res) => {
+	try {
+		const {oldPassword, newPassword} = req.body
+		let x = await paraQuery('UPDATE admin SET refresh_token=? WHERE id=?', [
+		
+		]);
+
+		return x;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
 
 module.exports = { getAdminForAuth, addRefreshTokenToAdmin, getAdminByToken };

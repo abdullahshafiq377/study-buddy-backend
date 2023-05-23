@@ -6,7 +6,7 @@ exports.saveFile = async file => {
     await file.mv( path.resolve('./') + '/uploads/' + '' + name, err => {
         if (err) {
             console.log(err);
-            return null;
+            return process.env.DEFAULT_IMAGE_NAME;
         }
     });
     return name;

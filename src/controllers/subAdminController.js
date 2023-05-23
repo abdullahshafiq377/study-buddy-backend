@@ -3,6 +3,7 @@ require('dotenv')
 	.config();
 const getPasswordHash = require('./../utils/passwordHash');
 const {saveFile, getFile} = require('../utils/saveFiles');
+const bcrypt = require('bcrypt');
 
 const getAllSubAdmins = async (req, res) => {
 	try {
@@ -44,11 +45,14 @@ const createNewSubAdmin = async (req, res) => {
 			department_id,
 		} = req.body;
 		
-		let imageName = null;
+		let imageName = process.env.DEFAULT_IMAGE_NAME;
 		if (req.files) {
 			let {image} = req.files;
 			console.log(image);
 			imageName = await saveFile(image);
+			if (imageName === null) {
+				imageName = process.env.DEFAULT_IMAGE_NAME;
+			}
 		}
 		console.log(imageName);
 		let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
@@ -103,11 +107,14 @@ const updateSubAdmin = async (req, res) => {
 			department_id,
 		} = req.body;
 		let {id} = req.params;
-		let imageName = null;
+		let imageName = process.env.DEFAULT_IMAGE_NAME;
 		if (req.files) {
 			let {image} = req.files;
 			console.log(image);
 			imageName = await saveFile(image);
+			if (imageName === null) {
+				 imageName = process.env.DEFAULT_IMAGE_NAME;
+			}
 		}
 		
 		let x = await paraQuery(
@@ -137,23 +144,33 @@ const updateSubAdmin = async (req, res) => {
 
 const updateSubAdminPassword = async (req, res) => {
 	try {
-		let {password} = req.body;
+		let {oldPass, newPass, email} = req.body;
 		let {id} = req.params;
-		let passwordHash = await getPasswordHash(password);
+		let subAdmin = await getSubAdminForAuth(email);
+		subAdmin = subAdmin[0];
 		
-		let x = await paraQuery(
-			'UPDATE sub_admin SET password = ? WHERE id = ?;',
-			[
-				passwordHash,
-				id,
-			],
-		);
-		res.status(200)
-		   .json(x);
+		const match = await bcrypt.compare(oldPass, subAdmin.password);
+		
+		if (match) {
+			let passHash = await getPasswordHash(newPass);
+			let x = await paraQuery(
+				'UPDATE sub_admin SET password = ? WHERE id = ?;',
+				[
+					passHash,
+					id,
+				],
+			);
+			res.status(200)
+			   .json({message: 'Password Changed Successfully.'});
+		}
+		else {
+			res.status(400)
+			   .json({message: 'Password Changed Failed: Invalid Old Password.'});
+		}
 	} catch (error) {
 		console.log(error);
 		res.status(400)
-		   .json({error: true});
+		   .json({message: 'Password Changed Failed: An error occurred. Please try again later.'});
 	}
 };
 

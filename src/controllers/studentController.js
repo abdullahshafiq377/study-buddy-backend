@@ -2,6 +2,8 @@ const paraQuery = require('../utils/db');
 require('dotenv').config();
 const getPasswordHash = require('./../utils/passwordHash');
 const {getSystemDetails} = require("./systemController");
+const {saveFile} = require('../utils/saveFiles');
+const bcrypt = require('bcrypt');
 
 const getAllStudents = async (req, res) => {
     console.log('a')
@@ -46,10 +48,21 @@ const createNewStudent = async (req, res) => {
             session,
             reg_num,
         } = req.body;
+        
+        let imageName = process.env.DEFAULT_IMAGE_NAME;
+        if (req.files) {
+            let {image} = req.files;
+            console.log(image);
+            imageName = await saveFile(image);
+            if (imageName === null) {
+                imageName = process.env.DEFAULT_IMAGE_NAME;
+            }
+        }
+        console.log(imageName);
         let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
 
         let x = await paraQuery(
-            'INSERT INTO student (name, f_name, dob, gender, nationality, contact, email, image,department_id, password, program_id, program_title, session, reg_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO student (name, f_name, dob, gender, nationality, contact, email, image,department_id, password, program_id, program_title, session, reg_num, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 name,
                 f_name,
@@ -65,6 +78,7 @@ const createNewStudent = async (req, res) => {
                 program_title,
                 session,
                 reg_num,
+                imageName
             ],
         );
         res.status(200).json(x);
@@ -104,8 +118,19 @@ const updateStudent = async (req, res) => {
             session,
             reg_num,
         } = req.body;
+        
         let {id} = req.params;
-
+        
+        let imageName = process.env.DEFAULT_IMAGE_NAME;
+        if (req.files) {
+            let {image} = req.files;
+            console.log(image);
+            imageName = await saveFile(image);
+            if (imageName === null) {
+                imageName = process.env.DEFAULT_IMAGE_NAME;
+            }
+        }
+        
         let x = await paraQuery(
             'UPDATE student SET name=?, f_name=?, dob=?, gender=?, nationality=?, contact=?, email=?, image=?,department_id=?, program_id=?, program_title=?, session=?, reg_num=? WHERE id=?',
             [
@@ -116,7 +141,7 @@ const updateStudent = async (req, res) => {
                 nationality,
                 contact,
                 email,
-                image,
+                imageName,
                 department_id,
                 program_id,
                 program_title,
@@ -134,21 +159,33 @@ const updateStudent = async (req, res) => {
 
 const updateStudentPassword = async (req, res) => {
     try {
-        let {password} = req.body;
-        let { id } = req.params;
-        let passwordHash = await getPasswordHash(password);
-
-        let x = await paraQuery(
-            'UPDATE student SET password = ? WHERE id = ?;',
-            [
-                passwordHash,
-                id,
-            ],
-        );
-        res.status(200).json(x);
+        let {oldPass, newPass, email} = req.body;
+        let {id} = req.params;
+        let student = await getStudentForAuth(email);
+        student = student[0];
+        
+        const match = await bcrypt.compare(oldPass, student.password);
+        
+        if (match) {
+            let passHash = await getPasswordHash(newPass);
+            let x = await paraQuery(
+                'UPDATE student SET password = ? WHERE id = ?;',
+                [
+                    passHash,
+                    id,
+                ],
+            );
+            res.status(200)
+               .json({message: 'Password Changed Successfully.'});
+        }
+        else {
+            res.status(400)
+               .json({message: 'Password Changed Failed: Invalid Old Password.'});
+        }
     } catch (error) {
         console.log(error);
-        res.status(400).json({ error: true });
+        res.status(400)
+           .json({message: 'Password Changed Failed: An error occurred. Please try again later.'});
     }
 };
 

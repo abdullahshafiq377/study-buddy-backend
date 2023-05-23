@@ -1,6 +1,8 @@
 const paraQuery = require('../utils/db');
 require('dotenv').config();
 const getPasswordHash = require('./../utils/passwordHash');
+const {saveFile} = require('../utils/saveFiles');
+const bcrypt = require('bcrypt');
 
 const getAllInstructors = async (req, res) => {
 	try {
@@ -51,10 +53,22 @@ const createNewInstructor = async (req, res) => {
 			image,
 			department_id,
 		} = req.body;
+		
+		let imageName = process.env.DEFAULT_IMAGE_NAME;
+		if (req.files) {
+			let {image} = req.files;
+			console.log(image);
+			imageName = await saveFile(image);
+			if (imageName === null) {
+				imageName = process.env.DEFAULT_IMAGE_NAME;
+			}
+		}
+		console.log(imageName);
+		
 		let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
 
 		let x = await paraQuery(
-			'INSERT INTO instructor (name, f_name, dob, gender, nationality, contact, email, image, department_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'INSERT INTO instructor (name, f_name, dob, gender, nationality, contact, email, image, department_id, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				name,
 				f_name,
@@ -66,6 +80,7 @@ const createNewInstructor = async (req, res) => {
 				image,
 				department_id,
 				password,
+				imageName
 			],
 		);
 		res.status(200).json(x);
@@ -103,6 +118,18 @@ const updateInstructor = async (req, res) => {
 			image,
 			department_id,
 		} = req.body;
+		
+		let imageName = process.env.DEFAULT_IMAGE_NAME;
+		if (req.files) {
+			let {image} = req.files;
+			console.log(image);
+			imageName = await saveFile(image);
+			if (imageName === null) {
+				imageName = process.env.DEFAULT_IMAGE_NAME;
+			}
+		}
+		
+		
 		let x = await paraQuery(
 			'UPDATE instructor SET name=?, f_name=?, dob=?, gender=?, nationality=?, contact=?, email=?, image=?, department_id=? WHERE id=?',
 			[
@@ -113,7 +140,7 @@ const updateInstructor = async (req, res) => {
 				nationality,
 				contact,
 				email,
-				image,
+				imageName,
 				department_id,
 				id,
 			],
@@ -127,21 +154,33 @@ const updateInstructor = async (req, res) => {
 
 const updateInstructorPassword = async (req, res) => {
 	try {
-		let {password} = req.body;
-		let { id } = req.params;
-		let passwordHash = await getPasswordHash(password);
-
-		let x = await paraQuery(
-			'UPDATE instructor SET password = ? WHERE id = ?;',
-			[
-				passwordHash,
-				id,
-			],
-		);
-		res.status(200).json(x);
+		let {oldPass, newPass, email} = req.body;
+		let {id} = req.params;
+		let instructor = await getInstructorForAuth(email);
+		instructor = instructor[0];
+		
+		const match = await bcrypt.compare(oldPass, instructor.password);
+		
+		if (match) {
+			let passHash = await getPasswordHash(newPass);
+			let x = await paraQuery(
+				'UPDATE instructor SET password = ? WHERE id = ?;',
+				[
+					passHash,
+					id,
+				],
+			);
+			res.status(200)
+			   .json({message: 'Password Changed Successfully.'});
+		}
+		else {
+			res.status(400)
+			   .json({message: 'Password Changed Failed: Invalid Old Password.'});
+		}
 	} catch (error) {
 		console.log(error);
-		res.status(400).json({ error: true });
+		res.status(400)
+		   .json({message: 'Password Changed Failed: An error occurred. Please try again later.'});
 	}
 };
 

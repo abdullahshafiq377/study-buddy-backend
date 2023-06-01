@@ -170,6 +170,8 @@ const createNewResult = async (studentId, courseId) => {
 	}
 };
 
+
+
 const deleteResult = async (studentId, courseId) => {
 	try {
 		let x = await paraQuery('DELETE FROM result WHERE student_id=? AND course_id=?', [studentId, courseId]);
@@ -181,4 +183,33 @@ const deleteResult = async (studentId, courseId) => {
 	}
 };
 
-module.exports = {createNewResult, deleteResult, generateResult, getAllResultsByStudent};
+const getResultDeadlines = async (req, res) => {
+	try {
+		let x = await paraQuery('SELECT * FROM result_deadline', []);
+		console.log(x);
+		res.json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400)
+		   .json({error: true});
+	}
+};
+
+const updateResultDeadlines = async (req,res) => {
+	try {
+		let {
+			assignmentDeadline,
+			quizDeadline,
+			midDeadline,
+			terminalDeadline
+		} = req.body;
+		
+		let x = await paraQuery('UPDATE result_deadline SET assignment_deadline=?, quiz_deadline=?, mid_deadline=?, terminal_deadline=? WHERE id=?', [assignmentDeadline, quizDeadline, midDeadline, terminalDeadline, 1]);
+		res.status(200).json(x);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({error: true});
+	}
+}
+
+module.exports = {createNewResult, deleteResult, generateResult, getAllResultsByStudent,getResultDeadlines,updateResultDeadlines};

@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 const {getStudentObjById, getCurrentSemester} = require('./studentController');
 const {getSystemDetails} = require('./systemController');
 const {createNewResult, deleteResult} = require('./resultController');
+const {v4: uuidv4} = require('uuid');
 
 const getAllCourses = async (req, res) => {
 	try {
@@ -175,11 +176,12 @@ const getRegisteredCourses = async (req, res) => {
 };
 const registerCourse = async (req, res) => {
 	try {
+		const id = uuidv4()
 		let {studentId, courseId} = req.body;
 		const {current_session: currentSession} = await getSystemDetails();
 		
-		let x = await paraQuery('INSERT INTO registration (student_id, course_id, session) VALUES (?, ?, ?)',
-		                        [studentId, courseId, currentSession],);
+		let x = await paraQuery('INSERT INTO registration (id, student_id, course_id, session) VALUES (?, ?, ?, ?)',
+		                        [id, studentId, courseId, currentSession],);
 		await createNewResult(studentId, courseId);
 		res.status(200)
 		   .json(x);

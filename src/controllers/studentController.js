@@ -41,7 +41,6 @@ const createNewStudent = async (req, res) => {
             nationality,
             contact,
             email,
-            image,
             department_id,
             program_id,
             program_title,
@@ -62,7 +61,7 @@ const createNewStudent = async (req, res) => {
         let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
 
         let x = await paraQuery(
-            'INSERT INTO student (name, f_name, dob, gender, nationality, contact, email, image,department_id, password, program_id, program_title, session, reg_num, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO student (name, f_name, dob, gender, nationality, contact, email, image,department_id, password, program_id, program_title, session, reg_num) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 name,
                 f_name,
@@ -71,14 +70,13 @@ const createNewStudent = async (req, res) => {
                 nationality,
                 contact,
                 email,
-                image,
+                imageName,
                 department_id,
                 password,
                 program_id,
                 program_title,
                 session,
                 reg_num,
-                imageName
             ],
         );
         res.status(200).json(x);

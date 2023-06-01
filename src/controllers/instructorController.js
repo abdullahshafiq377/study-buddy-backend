@@ -50,7 +50,6 @@ const createNewInstructor = async (req, res) => {
 			nationality,
 			contact,
 			email,
-			image,
 			department_id,
 		} = req.body;
 		
@@ -63,12 +62,12 @@ const createNewInstructor = async (req, res) => {
 				imageName = process.env.DEFAULT_IMAGE_NAME;
 			}
 		}
-		console.log(imageName);
+		console.log(req.body);
 		
 		let password = await getPasswordHash(process.env.DEFAULT_PASSWORD);
 
 		let x = await paraQuery(
-			'INSERT INTO instructor (name, f_name, dob, gender, nationality, contact, email, image, department_id, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			'INSERT INTO instructor (name, f_name, dob, gender, nationality, contact, email, image, department_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				name,
 				f_name,
@@ -77,10 +76,9 @@ const createNewInstructor = async (req, res) => {
 				nationality,
 				contact,
 				email,
-				image,
+				imageName,
 				department_id,
 				password,
-				imageName
 			],
 		);
 		res.status(200).json(x);
@@ -115,7 +113,6 @@ const updateInstructor = async (req, res) => {
 			nationality,
 			contact,
 			email,
-			image,
 			department_id,
 		} = req.body;
 		

@@ -1,6 +1,8 @@
 const paraQuery = require('../utils/db');
 const mysql = require("mysql2/promise");
 const {createNewGrade, deleteGrade} = require('./gradeController');
+const {v4: uuidv4} = require('uuid')
+
 
 const getAllSections = async (req, res) => {
     try {
@@ -175,11 +177,30 @@ const getUnassignedStudents = async (req, res) => {
 };
 
 const assignSection = async (req, res) => {
-    const {sectionId, registrationId, studentId} = req.body;
+    const {students, sectionId} = req.body;
+    const values = [];
+    const gradeValues = [];
+    students.map(student => {
+        let id = uuidv4();
+        let value = [student.registration_id, sectionId];
+        let gradeValue = [id, student.id, sectionId, student.registration_id];
+        values.push(value);
+        gradeValues.push(gradeValue)
+    })
+    console.log('students', students);
+    console.log('assign', values);
     try {
-        let x = await paraQuery('UPDATE registration SET section_id=? WHERE id=?', [sectionId, registrationId]);
-        await createNewGrade(studentId, sectionId, registrationId);
-        console.log(x);
+        const connection = await mysql.createConnection({
+                                                            host: process.env.DB_HOST,
+                                                            user: process.env.DB_USER,
+                                                            password: process.env.DB_PASSWORD,
+                                                            database: process.env.DB_NAME,
+                                                        });
+
+        let x = await connection.query('INSERT INTO registration (id, section_id) VALUES ? ON DUPLICATE KEY UPDATE section_id = VALUES(section_id);', [values]);
+        let y = await connection.query('INSERT INTO grade (id, student_id, section_id, registration_id) VALUES ?', [gradeValues]);
+      
+        connection.end();
         res.json(x);
     } catch (error) {
         console.log(error);
@@ -187,11 +208,29 @@ const assignSection = async (req, res) => {
     }
 };
 const unassignSection = async (req, res) => {
-    const {registrationId, studentId} = req.body;
+    const {students, sectionId} = req.body;
+    const values = [];
+    const gradeValues = [];
+    students.map(student => {
+        let value = [student.registration_id, null];
+        let gradeValue = [student.id, student.registration_id];
+        
+        values.push(value);
+        gradeValues.push(gradeValue);
+    })
+    console.log('values', values);
     try {
-        let x = await paraQuery('UPDATE registration SET section_id=? WHERE id=?', [null, registrationId]);
-        await deleteGrade(registrationId, studentId)
-        console.log(x);
+        const connection = await mysql.createConnection({
+                                                            host: process.env.DB_HOST,
+                                                            user: process.env.DB_USER,
+                                                            password: process.env.DB_PASSWORD,
+                                                            database: process.env.DB_NAME,
+                                                        });
+        
+        let x = await connection.query('INSERT INTO registration (id, section_id) VALUES ? ON DUPLICATE KEY UPDATE section_id = VALUES(section_id);', [values]);
+        let y = await connection.query('DELETE FROM grade WHERE (student_id,registration_id) IN (?)', [gradeValues]);
+        
+        connection.end();
         res.json(x);
     } catch (error) {
         console.log(error);
